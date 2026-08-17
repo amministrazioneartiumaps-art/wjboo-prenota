@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prenota un appuntamento — Wjboo</title>
+<link rel="icon" type="image/png" href="https://pub-14ac17906e554e28a285c9ae53ef9b36.r2.dev/wjboo_icon_192.png">
+<link rel="apple-touch-icon" href="https://pub-14ac17906e554e28a285c9ae53ef9b36.r2.dev/wjboo_icon_192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ember:#FF5A36;
+    --warm:#FF9478;
+    --night:#0278d3;
+    --ink:#142023;
+    --stone:#5C6B70;
+    --cream:#FBF6F2;
+    --paper:#ffffff;
+    --border:#E9DFD6;
+    --good:#2d7d4f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.6;
+  }
+  h1,h2,h3,.serif{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    margin:0;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 24px;}
+
+  .brand-header{
+    padding:24px 0 0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .brand-header .wordmark{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:22px;
+    color:var(--ember);
+    letter-spacing:-0.01em;
+  }
+
+  .hero{ padding:40px 0 8px; text-align:center; }
+  .eyebrow{
+    display:inline-block;
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ember);
+    font-weight:600;
+    margin-bottom:14px;
+  }
+  .hero h1{
+    font-size:clamp(26px,5vw,36px);
+    line-height:1.2;
+    letter-spacing:-0.01em;
+  }
+  .hero-sub{
+    margin-top:14px;
+    font-size:16px;
+    color:var(--stone);
+    max-width:46ch;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .card{
+    background:var(--paper);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 14px 34px -20px rgba(20,32,35,0.3);
+    padding:24px;
+    margin:32px 0 56px;
+  }
+
+  /* Selettore giorni */
+  .day-tabs{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding-bottom:4px;
+    margin-bottom:20px;
+    scrollbar-width:thin;
+  }
+  .day-tab{
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    padding:10px 14px;
+    border-radius:12px;
+    border:1.5px solid var(--border);
+    background:var(--paper);
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    transition:all .15s;
+  }
+  .day-tab:hover{ border-color:var(--warm); }
+  .day-tab.active{ background:var(--ember); border-color:var(--ember); color:#fff; }
+  .day-tab .dt-dow{ font-size:11px; text-transform:uppercase; letter-spacing:.04em; opacity:.75; }
+  .day-tab .dt-num{ font-size:17px; font-weight:700; font-family:'Fraunces',serif; }
+
+  /* Griglia slot */
+  .slot-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(84px,1fr));
+    gap:10px;
+  }
+  .slot-btn{
+    padding:10px 8px;
+    border-radius:10px;
+    border:1.5px solid var(--border);
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .slot-btn:hover{ border-color:var(--ember); color:var(--ember); }
+
+  .empty-note{
+    color:var(--stone);
+    font-size:14px;
+    text-align:center;
+    padding:24px 8px;
+  }
+
+  /* Form contatto */
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--stone);
+    cursor:pointer;
+    margin-bottom:16px;
+    background:none;
+    border:none;
+    padding:0;
+    font-family:'Inter',sans-serif;
+  }
+  .selected-slot{
+    background:var(--cream);
+    border-radius:12px;
+    padding:14px 16px;
+    margin-bottom:20px;
+    font-size:15px;
+  }
+  .selected-slot strong{ font-family:'Fraunces',serif; font-weight:600; }
+  .field{ margin-bottom:14px; }
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:var(--stone);
+    margin-bottom:5px;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  .field input, .field textarea{
+    width:100%;
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    padding:11px 13px;
+    font-size:15px;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .15s;
+  }
+  .field input:focus, .field textarea:focus{ border-color:var(--ember); }
+  .field textarea{ resize:vertical; min-height:70px; }
+  .hp-field{ position:absolute; left:-9999px; top:-9999px; }
+
+  .submit-btn{
+    width:100%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--ember);
+    color:#fff;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    transition:transform .15s, opacity .15s;
+    margin-top:6px;
+  }
+  .submit-btn:hover{ transform:translateY(-2px); }
+  .submit-btn:disabled{ opacity:.6; cursor:default; transform:none; }
+
+  .form-error{
+    color:#b83232;
+    font-size:13px;
+    margin-top:10px;
+    display:none;
+  }
+
+  /* Conferma */
+  .confirm-icon{
+    width:56px; height:56px;
+    border-radius:50%;
+    background:var(--good);
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:28px;
+    margin:0 auto 18px;
+  }
+  .confirm-box{ text-align:center; }
+  .confirm-box h2{ font-size:22px; margin-bottom:10px; }
+  .confirm-box p{ color:var(--stone); font-size:15px; }
+
+  .loading-note{ text-align:center; color:var(--stone); font-size:14px; padding:24px 8px; }
+
+  footer{
+    text-align:center;
+    font-size:12px;
+    color:var(--stone);
+    padding:0 0 40px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="brand-header">
+    <span class="wordmark">wjboo</span>
+  </div>
+
+  <section class="hero">
+    <span class="eyebrow">Parliamone</span>
+    <h1>Prenota una chiamata<br>con il nostro staff</h1>
+    <p class="hero-sub">Dieci minuti, senza impegno. Scegli il giorno e l'orario che preferisci, ti confermiamo l'appuntamento via email.</p>
+  </section>
+
+  <div class="card">
+
+    <!-- STEP 1: scelta slot -->
+    <div id="stepSlots">
+      <div id="daysLoading" class="loading-note">Carico gli orari disponibili…</div>
+      <div id="dayTabs" class="day-tabs" style="display:none"></div>
+      <div id="slotGrid" class="slot-grid"></div>
+      <div id="noSlots" class="empty-note" style="display:none">Nessuno slot disponibile in questo momento. Scrivici a <a href="mailto:amministrazione@wjboo.it" style="color:var(--ember)">amministrazione@wjboo.it</a>.</div>
+    </div>
+
+    <!-- STEP 2: form contatto -->
+    <div id="stepForm" style="display:none">
+      <button class="back-link" onclick="backToSlots()">← Cambia orario</button>
+      <div class="selected-slot" id="selectedSlotLabel"></div>
+      <form id="bookingForm" onsubmit="submitBooking(event)">
+        <div class="field">
+          <label for="fName">Nome e cognome</label>
+          <input id="fName" type="text" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="fEmail">Email</label>
+          <input id="fEmail" type="email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="fPhone">Telefono (facoltativo)</label>
+          <input id="fPhone" type="tel" autocomplete="tel">
+        </div>
+        <div class="field">
+          <label for="fNote">Note (facoltativo)</label>
+          <textarea id="fNote" placeholder="Di cosa vorresti parlare?"></textarea>
+        </div>
+        <div class="field hp-field" aria-hidden="true">
+          <label for="fCompany">Non compilare questo campo</label>
+          <input id="fCompany" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <button type="submit" class="submit-btn" id="submitBtn">Richiedi appuntamento</button>
+        <div class="form-error" id="formError"></div>
+      </form>
+    </div>
+
+    <!-- STEP 3: conferma -->
+    <div id="stepDone" style="display:none">
+      <div class="confirm-box">
+        <div class="confirm-icon">✓</div>
+        <h2>Richiesta ricevuta</h2>
+        <p>Ti abbiamo inviato una email di conferma. Il nostro staff confermerà l'appuntamento a breve.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>Wjboo — Artium APS</footer>
+
+</div>
+
+<script>
+  // Stesso progetto Supabase usato da tutto l'ecosistema Wjboo (tsknvacxelkypwfortvo).
+  // La SUPABASE_ANON_KEY è pubblica per design (chiave "anon", non la service key).
+  const SUPABASE_URL = 'https://tsknvacxelkypwfortvo.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRza252YWN4ZWxreXB3Zm9ydHZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwMzA1MjgsImV4cCI6MjA5NzYwNjUyOH0.pEdw4cibbqgaTLNj_GVdGyNsP_w9BNo6zWhSOq2hPSk';
+  const EDGE_URL = 'https://wjboo-proxy.shiny-glade-a662.workers.dev';
+  const TZ = 'Europe/Rome';
+
+  const params = new URLSearchParams(window.location.search);
+  const SOURCE = params.get('source') || 'altro';
+  const SOURCE_REF = params.get('ref') || null;
+
+  let selectedSlot = null; // { start: Date, label: string }
+  let slotsByDay = new Map(); // 'YYYY-MM-DD' -> [{start:Date}]
+
+  async function sbRpc(fn, body){
+    const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify(body)
+    });
+    if(!res.ok){
+      const errBody = await res.json().catch(()=>({}));
+      throw new Error(errBody.message || ('Errore ' + res.status));
+    }
+    return res.json();
+  }
+
+  function callEmail(type, data){
+    return fetch(EDGE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+        apikey: SUPABASE_ANON_KEY,
+        'x-client-info': 'wjboo-prenota/1.0'
+      },
+      body: JSON.stringify({ type, data })
+    }).catch(()=>{}); // best-effort, non blocca la prenotazione
+  }
+
+  function dateKey(d){
+    return new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year:'numeric', month:'2-digit', day:'2-digit' }).format(d);
+  }
+
+  async function loadSlots(){
+    try {
+      const today = new Date();
+      const to = new Date(today.getTime() + 21 * 24 * 3600 * 1000);
+      const fmt = d => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(d);
+      const rows = await sbRpc('get_available_slots_public', { p_from: fmt(today), p_to: fmt(to) });
+
+      slotsByDay = new Map();
+      rows.forEach(r => {
+        const start = new Date(r.slot_start);
+        const key = dateKey(start);
+        if(!slotsByDay.has(key)) slotsByDay.set(key, []);
+        slotsByDay.get(key).push(start);
+      });
+
+      document.getElementById('daysLoading').style.display = 'none';
+
+      if(slotsByDay.size === 0){
+        document.getElementById('noSlots').style.display = 'block';
+        return;
+      }
+
+      const dayTabs = document.getElementById('dayTabs');
+      dayTabs.style.display = 'flex';
+      const days = Array.from(slotsByDay.keys()).sort();
+      days.forEach((key, i) => {
+        const d = slotsByDay.get(key)[0];
+        const btn = document.createElement('div');
+        btn.className = 'day-tab' + (i === 0 ? ' active' : '');
+        btn.dataset.key = key;
+        btn.innerHTML =
+          '<span class="dt-dow">' + new Intl.DateTimeFormat('it-IT', { timeZone: TZ, weekday:'short' }).format(d) + '</span>' +
+          '<span class="dt-num">' + new Intl.DateTimeFormat('it-IT', { timeZone: TZ, day:'numeric', month:'short' }).format(d) + '</span>';
+        btn.onclick = () => selectDay(key);
+        dayTabs.appendChild(btn);
+      });
+
+      selectDay(days[0]);
+    } catch(e){
+      document.getElementById('daysLoading').textContent = 'Errore nel caricamento degli orari. Riprova tra poco o scrivici a amministrazione@wjboo.it.';
+    }
+  }
+
+  function selectDay(key){
+    document.querySelectorAll('.day-tab').forEach(el => el.classList.toggle('active', el.dataset.key === key));
+    const grid = document.getElementById('slotGrid');
+    grid.innerHTML = '';
+    (slotsByDay.get(key) || []).forEach(start => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'slot-btn';
+      btn.textContent = new Intl.DateTimeFormat('it-IT', { timeZone: TZ, hour:'2-digit', minute:'2-digit' }).format(start);
+      btn.onclick = () => selectSlot(start);
+      grid.appendChild(btn);
+    });
+  }
+
+  function selectSlot(start){
+    selectedSlot = start;
+    const label = new Intl.DateTimeFormat('it-IT', { timeZone: TZ, weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' }).format(start);
+    document.getElementById('selectedSlotLabel').innerHTML = 'Hai scelto <strong>' + label + '</strong>';
+    document.getElementById('stepSlots').style.display = 'none';
+    document.getElementById('stepForm').style.display = 'block';
+  }
+
+  function backToSlots(){
+    document.getElementById('stepForm').style.display = 'none';
+    document.getElementById('stepSlots').style.display = 'block';
+  }
+
+  async function submitBooking(ev){
+    ev.preventDefault();
+    if(document.getElementById('fCompany').value){ return; } // honeypot: bot silenzioso
+
+    const name = document.getElementById('fName').value.trim();
+    const email = document.getElementById('fEmail').value.trim();
+    const phone = document.getElementById('fPhone').value.trim() || null;
+    const note = document.getElementById('fNote').value.trim() || null;
+    const errEl = document.getElementById('formError');
+    const btn = document.getElementById('submitBtn');
+    errEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Invio in corso…';
+
+    try {
+      await sbRpc('create_appointment_public', {
+        p_slot_start: selectedSlot.toISOString(),
+        p_name: name,
+        p_email: email,
+        p_phone: phone,
+        p_note: note,
+        p_source: SOURCE,
+        p_source_ref: SOURCE_REF
+      });
+
+      const when = new Intl.DateTimeFormat('it-IT', { timeZone: TZ, weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' }).format(selectedSlot);
+
+      callEmail('mailing', {
+        to: email,
+        subject: 'Richiesta appuntamento ricevuta — Wjboo',
+        html: '<p>Ciao ' + name + ',</p><p>Abbiamo ricevuto la tua richiesta di appuntamento per <strong>' + when + '</strong>.</p><p>Ti confermeremo a breve via email.</p><p>— Team Wjboo</p>'
+      });
+      callEmail('mailing', {
+        to: 'amministrazione@wjboo.it',
+        subject: 'Nuova richiesta appuntamento (' + SOURCE + ')',
+        html: '<p>Nuova richiesta di appuntamento da confermare:</p>' +
+          '<p><strong>Quando:</strong> ' + when + '<br>' +
+          '<strong>Nome:</strong> ' + name + '<br>' +
+          '<strong>Email:</strong> ' + email + '<br>' +
+          (phone ? '<strong>Telefono:</strong> ' + phone + '<br>' : '') +
+          '<strong>Provenienza:</strong> ' + SOURCE + (SOURCE_REF ? ' (' + SOURCE_REF + ')' : '') + '<br>' +
+          (note ? '<strong>Nota:</strong> ' + note : '') + '</p>' +
+          '<p>Confermala dal pannello Wjboo Admin → Appuntamenti.</p>'
+      });
+
+      document.getElementById('stepForm').style.display = 'none';
+      document.getElementById('stepDone').style.display = 'block';
+    } catch(e){
+      errEl.textContent = e.message.includes('non è più disponibile')
+        ? 'Questo orario è appena stato prenotato da qualcun altro. Torna indietro e scegline un altro.'
+        : 'Si è verificato un errore. Riprova o scrivici a amministrazione@wjboo.it.';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Richiedi appuntamento';
+    }
+  }
+
+  loadSlots();
+</script>
+
+</body>
+</html>
