@@ -3,308 +3,319 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prenota un appuntamento — Wjboo</title>
+<title>wjboo Appuntamenti</title>
 <link rel="icon" type="image/png" href="https://pub-14ac17906e554e28a285c9ae53ef9b36.r2.dev/wjboo_icon_192.png">
 <link rel="apple-touch-icon" href="https://pub-14ac17906e554e28a285c9ae53ef9b36.r2.dev/wjboo_icon_192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
+    --canvas:#F6F3EE;
+    --surface:#FFFFFF;
+    --surface-2:#FBF9F5;
+    --navy:#0B1D33;
+    --navy-2:#132C4A;
+    --ink:#14181F;
+    --muted:#726C63;
+    --muted-2:#96907F;
+    --line:#E6E1D8;
+    --line-strong:#D8D2C6;
     --ember:#FF5A36;
-    --warm:#FF9478;
-    --night:#0278d3;
-    --ink:#142023;
-    --stone:#5C6B70;
-    --cream:#FBF6F2;
-    --paper:#ffffff;
-    --border:#E9DFD6;
-    --good:#2d7d4f;
+    --ember-dark:#E14624;
+    --ember-tint:#FFE9E2;
+    --on-navy:#EDEDE9;
+    --on-navy-muted:#98A3B5;
+    --hairline-navy:rgba(255,255,255,.13);
+    --shadow-card:0 1px 2px rgba(20,24,31,.04), 0 20px 48px -24px rgba(20,24,31,.22);
+    --shadow-btn:0 1px 2px rgba(225,70,36,.15), 0 10px 24px -10px rgba(225,70,36,.45);
+    --focus:#0B1D33;
   }
-  *{box-sizing:border-box;}
+  *,*::before,*::after{box-sizing:border-box;}
   body{
     margin:0;
-    font-family:'Inter',sans-serif;
-    background:var(--cream);
+    background:var(--canvas);
     color:var(--ink);
-    line-height:1.6;
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
   }
-  h1,h2,h3,.serif{
-    font-family:'Fraunces',serif;
-    font-weight:500;
-    margin:0;
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
   }
-  .wrap{max-width:640px;margin:0 auto;padding:0 24px;}
+  h1,h2,h3{margin:0; font-family:'Inter',sans-serif; font-weight:700; letter-spacing:-.015em;}
+  p{margin:0;}
+  button{font-family:inherit;}
 
-  .brand-header{
-    padding:24px 0 0;
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-  .brand-header .wordmark{
-    font-family:'Fraunces',serif;
-    font-style:italic;
-    font-weight:600;
-    font-size:22px;
-    color:var(--ember);
-    letter-spacing:-0.01em;
-  }
+  .wrap{max-width:1180px; margin:0 auto; padding:40px 24px 96px;}
 
-  .hero{ padding:40px 0 8px; text-align:center; }
-  .eyebrow{
-    display:inline-block;
-    font-size:13px;
-    letter-spacing:0.06em;
-    text-transform:uppercase;
-    color:var(--ember);
-    font-weight:600;
-    margin-bottom:14px;
+  /* ============ DESK (split layout) ============ */
+  .desk{
+    margin-top:8px;
+    display:grid;
+    grid-template-columns:minmax(280px,38%) 1fr;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:var(--shadow-card);
+    background:var(--surface);
   }
-  .hero h1{
-    font-size:clamp(26px,5vw,36px);
-    line-height:1.2;
-    letter-spacing:-0.01em;
-  }
-  .hero-sub{
-    margin-top:14px;
-    font-size:16px;
-    color:var(--stone);
-    max-width:46ch;
-    margin-left:auto;
-    margin-right:auto;
-  }
+  @media (max-width:880px){ .desk{grid-template-columns:1fr;} }
 
-  .card{
-    background:var(--paper);
-    border:1px solid var(--border);
-    border-radius:16px;
-    box-shadow:0 14px 34px -20px rgba(20,32,35,0.3);
-    padding:24px;
-    margin:32px 0 56px;
-  }
-
-  /* Selettore giorni */
-  .day-tabs{
-    display:flex;
-    gap:8px;
-    overflow-x:auto;
-    padding-bottom:4px;
-    margin-bottom:20px;
-    scrollbar-width:thin;
-  }
-  .day-tab{
-    flex:0 0 auto;
+  /* ---- left panel ---- */
+  .panel{
+    position:relative;
+    background:
+      radial-gradient(120% 140% at 100% 0%, var(--navy-2) 0%, var(--navy) 55%),
+      var(--navy);
+    color:var(--on-navy);
+    padding:44px 40px 40px;
     display:flex;
     flex-direction:column;
-    align-items:center;
-    gap:2px;
-    padding:10px 14px;
-    border-radius:12px;
-    border:1.5px solid var(--border);
-    background:var(--paper);
-    cursor:pointer;
-    font-family:'Inter',sans-serif;
-    color:var(--ink);
-    transition:all .15s;
+    gap:28px;
   }
-  .day-tab:hover{ border-color:var(--warm); }
-  .day-tab.active{ background:var(--ember); border-color:var(--ember); color:#fff; }
-  .day-tab .dt-dow{ font-size:11px; text-transform:uppercase; letter-spacing:.04em; opacity:.75; }
-  .day-tab .dt-num{ font-size:17px; font-weight:700; font-family:'Fraunces',serif; }
+  .panel::after{
+    content:'';
+    position:absolute; inset:0;
+    background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0);
+    background-size:22px 22px;
+    mix-blend-mode:overlay;
+    pointer-events:none;
+  }
+  .panel-logo{width:150px; height:auto; display:block; position:relative; z-index:1;}
+  .panel-copy{position:relative; z-index:1; display:flex; flex-direction:column; gap:16px;}
+  .panel-copy h1{ font-size:clamp(28px,3.4vw,36px); line-height:1.14; letter-spacing:-.02em; color:#fff; }
+  .panel-sub{ font-size:14.5px; line-height:1.6; color:var(--on-navy-muted); max-width:34ch; }
 
-  /* Griglia slot */
-  .slot-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(84px,1fr));
-    gap:10px;
+  /* ---- right: booking card ---- */
+  .book{ padding:40px 44px 40px; display:flex; flex-direction:column; gap:24px; }
+  @media (max-width:640px){
+    .book{padding:28px 20px 32px;}
+    .panel{padding:32px 24px 30px;}
   }
-  .slot-btn{
-    padding:10px 8px;
-    border-radius:10px;
-    border:1.5px solid var(--border);
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Inter',sans-serif;
-    font-weight:600;
-    font-size:14px;
-    cursor:pointer;
-    transition:all .15s;
-  }
-  .slot-btn:hover{ border-color:var(--ember); color:var(--ember); }
+  .book-head h2{ font-size:19px; letter-spacing:-.005em; }
 
-  .empty-note{
-    color:var(--stone);
-    font-size:14px;
-    text-align:center;
-    padding:24px 8px;
+  /* segmented format control */
+  .segmented{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  @media (max-width:520px){ .segmented{grid-template-columns:1fr;} }
+  .seg{
+    position:relative; display:flex; align-items:center; gap:10px;
+    padding:13px 14px; border-radius:13px; border:1.5px solid var(--line);
+    background:var(--surface); cursor:pointer; text-align:left;
+    transition:border-color .15s ease, background .15s ease;
   }
+  .seg:hover{ border-color:var(--line-strong); }
+  .seg .seg-ic{
+    width:32px; height:32px; flex-shrink:0; border-radius:9px;
+    background:var(--surface-2); display:flex; align-items:center; justify-content:center;
+    transition:background .15s ease;
+  }
+  .seg .seg-ic svg{ width:16px; height:16px; stroke:var(--muted); fill:none; stroke-width:1.7; transition:stroke .15s ease; }
+  .seg b{ display:block; font-size:13.5px; font-weight:600; line-height:1.25; }
+  .seg span{ display:block; font-size:11.5px; color:var(--muted); margin-top:1px; }
+  .seg[aria-pressed="true"]{ border-color:var(--ember); background:var(--ember-tint); }
+  .seg[aria-pressed="true"] .seg-ic{ background:var(--ember); }
+  .seg[aria-pressed="true"] .seg-ic svg{ stroke:#fff; }
+  .seg:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+  .seg-note{ font-size:12px; color:var(--muted-2); display:flex; align-items:center; gap:6px; margin-top:2px; }
+  .seg-note svg{ width:12px; height:12px; stroke:var(--muted-2); fill:none; stroke-width:1.8; flex-shrink:0; }
 
-  /* Form contatto */
-  .back-link{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    font-size:13px;
-    font-weight:600;
-    color:var(--stone);
-    cursor:pointer;
-    margin-bottom:16px;
-    background:none;
-    border:none;
-    padding:0;
-    font-family:'Inter',sans-serif;
+  /* calendar rail */
+  .cal{ display:flex; flex-direction:column; gap:14px; }
+  .cal-label-row{ display:flex; align-items:baseline; justify-content:space-between; }
+  .cal-label{ font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-2); }
+  .cal-month{ font-size:12.5px; color:var(--muted); }
+
+  .day-rail{
+    display:grid; grid-auto-flow:column; grid-auto-columns:64px; gap:8px;
+    overflow-x:auto; padding-bottom:4px; scrollbar-width:thin;
   }
-  .selected-slot{
-    background:var(--cream);
-    border-radius:12px;
-    padding:14px 16px;
-    margin-bottom:20px;
-    font-size:15px;
+  .day{
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding:11px 0 12px; border-radius:12px; border:1.5px solid var(--line);
+    background:var(--surface); cursor:pointer;
+    transition:border-color .15s ease, background .15s ease, transform .1s ease;
   }
-  .selected-slot strong{ font-family:'Fraunces',serif; font-weight:600; }
-  .field{ margin-bottom:14px; }
-  .field label{
-    display:block;
-    font-size:12px;
-    font-weight:600;
-    color:var(--stone);
-    margin-bottom:5px;
-    text-transform:uppercase;
-    letter-spacing:.03em;
+  .day:hover{ border-color:var(--line-strong); }
+  .day span:first-child{ font-size:10.5px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted-2); }
+  .day span:last-child{ font-weight:700; font-size:18px; font-variant-numeric:tabular-nums; color:var(--ink); }
+  .day[aria-pressed="true"]{ border-color:var(--navy); background:var(--navy); transform:translateY(-1px); }
+  .day[aria-pressed="true"] span{ color:#fff !important; }
+  .day:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+  .slot-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(88px,1fr)); gap:9px; }
+  .slot{
+    padding:11px 6px; text-align:center; border-radius:10px; border:1.5px solid var(--line);
+    background:var(--surface); font-size:13.5px; font-weight:600; font-variant-numeric:tabular-nums;
+    color:var(--ink); cursor:pointer;
+    transition:border-color .15s ease, background .15s ease, color .15s ease;
   }
+  .slot:hover{ border-color:var(--ember); color:var(--ember-dark); }
+  .slot:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+  .slot[aria-pressed="true"]{ background:var(--ember); border-color:var(--ember); color:#fff; }
+
+  .empty-note{ color:var(--muted); font-size:14px; text-align:center; padding:24px 8px; }
+  .loading-note{ color:var(--muted); font-size:14px; text-align:center; padding:24px 8px; }
+
+  /* inline reveal: contact form */
+  .reveal{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .32s cubic-bezier(.4,0,.2,1); }
+  .reveal.open{ grid-template-rows:1fr; }
+  .reveal > div{ overflow:hidden; }
+  .reveal-inner{ border-top:1px solid var(--line); padding-top:24px; margin-top:2px; display:flex; flex-direction:column; gap:18px; }
+
+  .picked{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:12px; background:var(--surface-2); border:1px solid var(--line); }
+  .picked-ic{ width:34px; height:34px; border-radius:9px; flex-shrink:0; background:var(--ember); display:flex; align-items:center; justify-content:center; }
+  .picked-ic svg{ width:16px; height:16px; stroke:#fff; fill:none; stroke-width:1.8; }
+  .picked b{ display:block; font-size:13.5px; font-weight:600; }
+  .picked span{ display:block; font-size:12px; color:var(--muted); margin-top:1px; }
+
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:520px){ .form-grid{grid-template-columns:1fr;} }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field.full{ grid-column:1/-1; }
+  .field label{ font-size:11.5px; font-weight:600; color:var(--muted); letter-spacing:.02em; }
   .field input, .field textarea{
-    width:100%;
-    border:1.5px solid var(--border);
-    border-radius:10px;
-    padding:11px 13px;
-    font-size:15px;
-    font-family:'Inter',sans-serif;
-    color:var(--ink);
-    outline:none;
-    transition:border-color .15s;
+    font-family:inherit; font-size:14px; color:var(--ink); background:var(--surface);
+    border:1.5px solid var(--line); border-radius:10px; padding:11px 13px; outline:none;
+    transition:border-color .15s ease; width:100%;
   }
-  .field input:focus, .field textarea:focus{ border-color:var(--ember); }
-  .field textarea{ resize:vertical; min-height:70px; }
+  .field input:focus, .field textarea:focus{ border-color:var(--navy); }
+  .field textarea{ resize:vertical; min-height:64px; }
   .hp-field{ position:absolute; left:-9999px; top:-9999px; }
 
-  .submit-btn{
-    width:100%;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    background:var(--ember);
-    color:#fff;
-    font-family:'Inter',sans-serif;
-    font-weight:700;
-    font-size:15px;
-    padding:14px;
-    border:none;
-    border-radius:12px;
-    cursor:pointer;
-    transition:transform .15s, opacity .15s;
-    margin-top:6px;
+  .submit-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .submit-hint{ font-size:12px; color:var(--muted-2); max-width:32ch; }
+  .btn-primary{
+    display:inline-flex; align-items:center; gap:8px; background:var(--ember); color:#fff;
+    font-size:14px; font-weight:600; border:none; border-radius:11px; padding:13px 22px;
+    cursor:pointer; box-shadow:var(--shadow-btn); transition:transform .15s ease; flex-shrink:0;
   }
-  .submit-btn:hover{ transform:translateY(-2px); }
-  .submit-btn:disabled{ opacity:.6; cursor:default; transform:none; }
+  .btn-primary:hover{ transform:translateY(-1px); }
+  .btn-primary:disabled{ opacity:.6; cursor:default; transform:none; }
+  .btn-primary svg{ width:15px; height:15px; stroke:#fff; fill:none; stroke-width:2; }
 
-  .form-error{
-    color:#b83232;
-    font-size:13px;
-    margin-top:10px;
-    display:none;
-  }
+  .form-error{ color:#b83232; font-size:13px; display:none; }
 
-  /* Conferma */
-  .confirm-icon{
-    width:56px; height:56px;
-    border-radius:50%;
-    background:var(--good);
-    color:#fff;
-    display:flex; align-items:center; justify-content:center;
-    font-size:28px;
-    margin:0 auto 18px;
-  }
-  .confirm-box{ text-align:center; }
-  .confirm-box h2{ font-size:22px; margin-bottom:10px; }
-  .confirm-box p{ color:var(--stone); font-size:15px; }
+  /* confirmation state */
+  .confirm{ display:none; flex-direction:column; align-items:flex-start; gap:16px; padding:6px 2px 2px; }
+  .confirm.show{ display:flex; }
+  .confirm-ic{ width:44px; height:44px; border-radius:50%; background:var(--ember-tint); display:flex; align-items:center; justify-content:center; }
+  .confirm-ic svg{ width:20px; height:20px; stroke:var(--ember-dark); fill:none; stroke-width:2.2; }
+  .confirm h3{ font-size:19px; }
+  .confirm p{ font-size:13.5px; color:var(--muted); max-width:44ch; line-height:1.6; }
+  .confirm-summary{ font-size:13px; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:12px 14px; display:flex; flex-direction:column; gap:3px; }
 
-  .loading-note{ text-align:center; color:var(--stone); font-size:14px; padding:24px 8px; }
-
-  footer{
-    text-align:center;
-    font-size:12px;
-    color:var(--stone);
-    padding:0 0 40px;
-  }
+  .page-foot{ margin-top:26px; text-align:center; font-size:12px; color:var(--muted-2); }
 </style>
 </head>
 <body>
 
 <div class="wrap">
 
-  <div class="brand-header">
-    <span class="wordmark">wjboo</span>
-  </div>
+  <div class="desk">
 
-  <section class="hero">
-    <span class="eyebrow">Parliamone</span>
-    <h1>Prenota una chiamata<br>con il nostro staff</h1>
-    <p class="hero-sub">Dieci minuti, senza impegno. Scegli il giorno e l'orario che preferisci, ti confermiamo l'appuntamento via email.</p>
-  </section>
-
-  <div class="card">
-
-    <!-- STEP 1: scelta slot -->
-    <div id="stepSlots">
-      <div id="daysLoading" class="loading-note">Carico gli orari disponibili…</div>
-      <div id="dayTabs" class="day-tabs" style="display:none"></div>
-      <div id="slotGrid" class="slot-grid"></div>
-      <div id="noSlots" class="empty-note" style="display:none">Nessuno slot disponibile in questo momento. Scrivici a <a href="mailto:amministrazione@wjboo.it" style="color:var(--ember)">amministrazione@wjboo.it</a>.</div>
-    </div>
-
-    <!-- STEP 2: form contatto -->
-    <div id="stepForm" style="display:none">
-      <button class="back-link" onclick="backToSlots()">← Cambia orario</button>
-      <div class="selected-slot" id="selectedSlotLabel"></div>
-      <form id="bookingForm" onsubmit="submitBooking(event)">
-        <div class="field">
-          <label for="fName">Nome e cognome</label>
-          <input id="fName" type="text" required autocomplete="name">
-        </div>
-        <div class="field">
-          <label for="fEmail">Email</label>
-          <input id="fEmail" type="email" required autocomplete="email">
-        </div>
-        <div class="field">
-          <label for="fPhone">Telefono (facoltativo)</label>
-          <input id="fPhone" type="tel" autocomplete="tel">
-        </div>
-        <div class="field">
-          <label for="fNote">Note (facoltativo)</label>
-          <textarea id="fNote" placeholder="Di cosa vorresti parlare?"></textarea>
-        </div>
-        <div class="field hp-field" aria-hidden="true">
-          <label for="fCompany">Non compilare questo campo</label>
-          <input id="fCompany" type="text" tabindex="-1" autocomplete="off">
-        </div>
-        <button type="submit" class="submit-btn" id="submitBtn">Richiedi appuntamento</button>
-        <div class="form-error" id="formError"></div>
-      </form>
-    </div>
-
-    <!-- STEP 3: conferma -->
-    <div id="stepDone" style="display:none">
-      <div class="confirm-box">
-        <div class="confirm-icon">✓</div>
-        <h2>Richiesta ricevuta</h2>
-        <p>Ti abbiamo inviato una email di conferma. Il nostro staff confermerà l'appuntamento a breve.</p>
+    <!-- LEFT: brand panel -->
+    <aside class="panel">
+      <img class="panel-logo" src="https://pub-e468c0aef8ca4fd7ac99b7cd5e7c1f5d.r2.dev/loghi/logo%20principale%20wjboo.png" alt="wjboo">
+      <div class="panel-copy">
+        <h1>Centro appuntamenti</h1>
+        <p class="panel-sub">Un appuntamento con il nostro staff, senza impegno. Scegli il formato che preferisci: telefono, videochiamata o in sede.</p>
       </div>
-    </div>
+    </aside>
 
+    <!-- RIGHT: booking module -->
+    <section class="book">
+
+      <div id="bookingSteps">
+
+        <div class="book-head">
+          <h2>Prenota il tuo appuntamento</h2>
+        </div>
+
+        <div class="segmented" role="group" aria-label="Formato appuntamento" id="segmented">
+          <button type="button" class="seg" data-mode="phone" aria-pressed="true">
+            <span class="seg-ic"><svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1z"/></svg></span>
+            <span><b>Telefonata</b><span id="segDurPhone"></span></span>
+          </button>
+          <button type="button" class="seg" data-mode="video" aria-pressed="false">
+            <span class="seg-ic"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2.2"/><path d="M16 10.2l5-3v9.6l-5-3"/></svg></span>
+            <span><b>Videochiamata</b><span id="segDurVideo"></span></span>
+          </button>
+          <button type="button" class="seg" data-mode="office" aria-pressed="false">
+            <span class="seg-ic"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.4 7-11.5A7 7 0 0 0 5 9.5C5 14.6 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.4"/></svg></span>
+            <span><b>In sede</b><span id="segDurOffice"></span></span>
+          </button>
+        </div>
+
+        <div class="seg-note" id="segNote">
+          <svg viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9.2"/></svg>
+          <span>Ti chiamiamo noi al numero che ci lasci: nessuna app da installare.</span>
+        </div>
+
+        <div id="daysLoading" class="loading-note">Carico gli orari disponibili…</div>
+
+        <div id="calBlocks" style="display:none">
+          <div class="cal" style="margin-top:4px">
+            <div class="cal-label-row">
+              <span class="cal-label">Scegli il giorno</span>
+              <span class="cal-month" id="calMonth"></span>
+            </div>
+            <div class="day-rail" id="dayRail" role="group" aria-label="Giorno"></div>
+          </div>
+
+          <div class="cal" style="margin-top:20px">
+            <div class="cal-label-row"><span class="cal-label">Orari disponibili</span></div>
+            <div class="slot-grid" id="slotGrid" role="group" aria-label="Orario"></div>
+          </div>
+        </div>
+
+        <div id="noSlots" class="empty-note" style="display:none">Nessuno slot disponibile in questo momento. Scrivici a <a href="mailto:amministrazione@wjboo.it" style="color:var(--ember)">amministrazione@wjboo.it</a>.</div>
+
+        <div class="reveal" id="formReveal">
+          <div><div class="reveal-inner">
+
+            <div class="picked" id="pickedSummary">
+              <div class="picked-ic"><svg viewBox="0 0 24 24"><path d="M6 12l4 4 8-9"/></svg></div>
+              <div><b id="pickedLine1"></b><span id="pickedLine2"></span></div>
+            </div>
+
+            <form id="bookingForm" onsubmit="submitBooking(event)">
+              <div class="form-grid">
+                <div class="field"><label for="fName">Nome e cognome</label><input id="fName" type="text" required autocomplete="name"></div>
+                <div class="field"><label for="fEmail">Email</label><input id="fEmail" type="email" required autocomplete="email"></div>
+                <div class="field" id="phoneField"><label for="fPhone">Telefono</label><input id="fPhone" type="tel" autocomplete="tel"></div>
+                <div class="field full"><label for="fNote">Note (facoltativo)</label><textarea id="fNote" placeholder="Di cosa vorresti parlare?"></textarea></div>
+                <div class="field hp-field" aria-hidden="true"><label for="fCompany">Non compilare questo campo</label><input id="fCompany" type="text" tabindex="-1" autocomplete="off"></div>
+              </div>
+
+              <div class="submit-row" style="margin-top:18px">
+                <span class="submit-hint" id="submitHint"></span>
+                <button type="submit" class="btn-primary" id="submitBtn">
+                  Richiedi appuntamento
+                  <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+              <div class="form-error" id="formError"></div>
+            </form>
+
+          </div></div>
+        </div>
+
+      </div>
+
+      <div class="confirm" id="confirmView">
+        <div class="confirm-ic"><svg viewBox="0 0 24 24"><path d="M6 12l4 4 8-9"/></svg></div>
+        <h3>Richiesta ricevuta</h3>
+        <p id="confirmText">Ti abbiamo inviato una email di conferma. Il nostro staff confermerà l'appuntamento a breve.</p>
+        <div class="confirm-summary">
+          <span><b id="confSummary1"></b></span>
+          <span id="confSummary2"></span>
+        </div>
+      </div>
+
+    </section>
   </div>
 
-  <footer>Wjboo — Artium APS</footer>
+  <div class="page-foot">wjboo</div>
 
 </div>
 
@@ -320,17 +331,29 @@
   const SOURCE = params.get('source') || 'altro';
   const SOURCE_REF = params.get('ref') || null;
 
-  let selectedSlot = null; // { start: Date, label: string }
-  let slotsByDay = new Map(); // 'YYYY-MM-DD' -> [{start:Date}]
+  const MODES = {
+    phone:  { label:'Telefonata',    note:'Ti chiamiamo noi al numero che ci lasci: nessuna app da installare.', hint:'Ti richiameremo noi: assicurati che il numero sia corretto.', showPhone:true,
+              confirmText:'Ti abbiamo inviato una email di conferma. Il nostro staff confermerà l\'appuntamento a breve.' },
+    video:  { label:'Videochiamata', note:'Il link della videochiamata arriva insieme alla email di conferma.', hint:'Ti manderemo il link della videochiamata via email.', showPhone:false,
+              confirmText:'Ti abbiamo inviato una email di conferma con il link della videochiamata. Il nostro staff confermerà l\'appuntamento a breve.' },
+    office: { label:'In sede',       note:'Vi aspettiamo nei nostri uffici — l\'indirizzo è nella email di conferma.', hint:'L\'indirizzo completo arriva nella email di conferma.', showPhone:false,
+              confirmText:'Ti abbiamo inviato una email di conferma con l\'indirizzo. Il nostro staff confermerà l\'appuntamento a breve.' }
+  };
+
+  let mode = 'phone';
+  let selectedSlot = null;
+  let slotsByDay = new Map();
+  let slotMinutes = null;
+
+  const segNote = document.querySelector('#segNote span');
+  const submitHint = document.getElementById('submitHint');
+  const phoneField = document.getElementById('phoneField');
+  const reveal = document.getElementById('formReveal');
 
   async function sbRpc(fn, body){
     const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: 'Bearer ' + SUPABASE_ANON_KEY
-      },
+      headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY },
       body: JSON.stringify(body)
     });
     if(!res.ok){
@@ -343,12 +366,7 @@
   function callEmail(type, data){
     return fetch(EDGE_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
-        apikey: SUPABASE_ANON_KEY,
-        'x-client-info': 'wjboo-prenota/1.0'
-      },
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + SUPABASE_ANON_KEY, apikey: SUPABASE_ANON_KEY, 'x-client-info': 'wjboo-prenota/1.0' },
       body: JSON.stringify({ type, data })
     }).catch(()=>{}); // best-effort, non blocca la prenotazione
   }
@@ -367,31 +385,42 @@
       slotsByDay = new Map();
       rows.forEach(r => {
         const start = new Date(r.slot_start);
+        const end = new Date(r.slot_end);
+        if(slotMinutes === null) slotMinutes = Math.round((end - start) / 60000);
         const key = dateKey(start);
         if(!slotsByDay.has(key)) slotsByDay.set(key, []);
         slotsByDay.get(key).push(start);
       });
 
       document.getElementById('daysLoading').style.display = 'none';
+      const durLabel = slotMinutes ? slotMinutes + ' min' : '';
+      document.getElementById('segDurPhone').textContent = durLabel;
+      document.getElementById('segDurVideo').textContent = durLabel;
+      document.getElementById('segDurOffice').textContent = durLabel;
 
       if(slotsByDay.size === 0){
         document.getElementById('noSlots').style.display = 'block';
         return;
       }
 
-      const dayTabs = document.getElementById('dayTabs');
-      dayTabs.style.display = 'flex';
+      document.getElementById('calBlocks').style.display = 'block';
       const days = Array.from(slotsByDay.keys()).sort();
+      document.getElementById('calMonth').textContent = new Intl.DateTimeFormat('it-IT', { timeZone: TZ, month:'long', year:'numeric' }).format(slotsByDay.get(days[0])[0]);
+
+      const dayRail = document.getElementById('dayRail');
+      dayRail.innerHTML = '';
       days.forEach((key, i) => {
         const d = slotsByDay.get(key)[0];
-        const btn = document.createElement('div');
-        btn.className = 'day-tab' + (i === 0 ? ' active' : '');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'day';
         btn.dataset.key = key;
+        btn.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
         btn.innerHTML =
-          '<span class="dt-dow">' + new Intl.DateTimeFormat('it-IT', { timeZone: TZ, weekday:'short' }).format(d) + '</span>' +
-          '<span class="dt-num">' + new Intl.DateTimeFormat('it-IT', { timeZone: TZ, day:'numeric', month:'short' }).format(d) + '</span>';
+          '<span>' + new Intl.DateTimeFormat('it-IT', { timeZone: TZ, weekday:'short' }).format(d).toUpperCase() + '</span>' +
+          '<span>' + new Intl.DateTimeFormat('it-IT', { timeZone: TZ, day:'numeric' }).format(d) + '</span>';
         btn.onclick = () => selectDay(key);
-        dayTabs.appendChild(btn);
+        dayRail.appendChild(btn);
       });
 
       selectDay(days[0]);
@@ -401,35 +430,58 @@
   }
 
   function selectDay(key){
-    document.querySelectorAll('.day-tab').forEach(el => el.classList.toggle('active', el.dataset.key === key));
+    document.querySelectorAll('.day').forEach(el => {
+      el.setAttribute('aria-pressed', el.dataset.key === key ? 'true' : 'false');
+    });
+    selectedSlot = null;
+    closeForm();
     const grid = document.getElementById('slotGrid');
     grid.innerHTML = '';
     (slotsByDay.get(key) || []).forEach(start => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'slot-btn';
+      btn.className = 'slot';
       btn.textContent = new Intl.DateTimeFormat('it-IT', { timeZone: TZ, hour:'2-digit', minute:'2-digit' }).format(start);
-      btn.onclick = () => selectSlot(start);
+      btn.setAttribute('aria-pressed', 'false');
+      btn.onclick = () => selectSlot(start, btn);
       grid.appendChild(btn);
     });
   }
 
-  function selectSlot(start){
+  function selectSlot(start, btnEl){
     selectedSlot = start;
-    const label = new Intl.DateTimeFormat('it-IT', { timeZone: TZ, weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' }).format(start);
-    document.getElementById('selectedSlotLabel').innerHTML = 'Hai scelto <strong>' + label + '</strong>';
-    document.getElementById('stepSlots').style.display = 'none';
-    document.getElementById('stepForm').style.display = 'block';
+    document.querySelectorAll('.slot').forEach(el => el.setAttribute('aria-pressed', el === btnEl ? 'true' : 'false'));
+    openForm();
   }
 
-  function backToSlots(){
-    document.getElementById('stepForm').style.display = 'none';
-    document.getElementById('stepSlots').style.display = 'block';
+  function openForm(){
+    const m = MODES[mode];
+    const label = new Intl.DateTimeFormat('it-IT', { timeZone: TZ, weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' }).format(selectedSlot);
+    document.getElementById('pickedLine1').textContent = label.charAt(0).toUpperCase() + label.slice(1);
+    document.getElementById('pickedLine2').textContent = m.label + (slotMinutes ? ' · ' + slotMinutes + ' minuti' : '');
+    reveal.classList.add('open');
   }
+  function closeForm(){ reveal.classList.remove('open'); }
+
+  document.querySelectorAll('.seg').forEach(btn => {
+    btn.addEventListener('click', () => {
+      mode = btn.dataset.mode;
+      document.querySelectorAll('.seg').forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+      const m = MODES[mode];
+      segNote.textContent = m.note;
+      submitHint.textContent = m.hint;
+      phoneField.style.display = m.showPhone ? '' : 'none';
+      if(selectedSlot) openForm();
+    });
+  });
+  // stato iniziale
+  segNote.textContent = MODES.phone.note;
+  submitHint.textContent = MODES.phone.hint;
 
   async function submitBooking(ev){
     ev.preventDefault();
     if(document.getElementById('fCompany').value){ return; } // honeypot: bot silenzioso
+    if(!selectedSlot){ return; }
 
     const name = document.getElementById('fName').value.trim();
     const email = document.getElementById('fEmail').value.trim();
@@ -449,34 +501,46 @@
         p_phone: phone,
         p_note: note,
         p_source: SOURCE,
-        p_source_ref: SOURCE_REF
+        p_source_ref: SOURCE_REF,
+        p_appointment_type: mode
       });
 
+      const m = MODES[mode];
       const when = new Intl.DateTimeFormat('it-IT', { timeZone: TZ, weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' }).format(selectedSlot);
+      const whenCap = when.charAt(0).toUpperCase() + when.slice(1);
+
+      let formatNote = '';
+      if(mode === 'video') formatNote = 'Ti manderemo il link della videochiamata via email.';
+      else if(mode === 'office') formatNote = 'Ti manderemo l\'indirizzo della nostra sede via email.';
+      else formatNote = 'Ti chiameremo noi al numero che ci hai lasciato.';
 
       callEmail('mailing', {
         to: email,
-        subject: 'Richiesta appuntamento ricevuta — Wjboo',
-        html: '<p>Ciao ' + name + ',</p><p>Abbiamo ricevuto la tua richiesta di appuntamento per <strong>' + when + '</strong>.</p><p>Ti confermeremo a breve via email.</p><p>— Team Wjboo</p>'
+        subject: 'Richiesta appuntamento ricevuta — wjboo',
+        html: '<p>Ciao ' + name + ',</p><p>Abbiamo ricevuto la tua richiesta di appuntamento (' + m.label.toLowerCase() + ') per <strong>' + whenCap + '</strong>.</p><p>' + formatNote + '</p><p>Ti confermeremo a breve via email.</p><p>— Team wjboo</p>'
       });
       callEmail('mailing', {
         to: 'amministrazione@wjboo.it',
         subject: 'Nuova richiesta appuntamento (' + SOURCE + ')',
         html: '<p>Nuova richiesta di appuntamento da confermare:</p>' +
-          '<p><strong>Quando:</strong> ' + when + '<br>' +
+          '<p><strong>Quando:</strong> ' + whenCap + '<br>' +
+          '<strong>Formato:</strong> ' + m.label + '<br>' +
           '<strong>Nome:</strong> ' + name + '<br>' +
           '<strong>Email:</strong> ' + email + '<br>' +
           (phone ? '<strong>Telefono:</strong> ' + phone + '<br>' : '') +
           '<strong>Provenienza:</strong> ' + SOURCE + (SOURCE_REF ? ' (' + SOURCE_REF + ')' : '') + '<br>' +
           (note ? '<strong>Nota:</strong> ' + note : '') + '</p>' +
-          '<p>Confermala dal pannello Wjboo Admin → Appuntamenti.</p>'
+          '<p>Confermala dal pannello wjboo Admin → Appuntamenti.</p>'
       });
 
-      document.getElementById('stepForm').style.display = 'none';
-      document.getElementById('stepDone').style.display = 'block';
+      document.getElementById('confSummary1').textContent = whenCap;
+      document.getElementById('confSummary2').textContent = m.label + (slotMinutes ? ' · ' + slotMinutes + ' minuti' : '');
+      document.getElementById('confirmText').textContent = m.confirmText;
+      document.getElementById('bookingSteps').style.display = 'none';
+      document.getElementById('confirmView').classList.add('show');
     } catch(e){
       errEl.textContent = e.message.includes('non è più disponibile')
-        ? 'Questo orario è appena stato prenotato da qualcun altro. Torna indietro e scegline un altro.'
+        ? 'Questo orario è appena stato prenotato da qualcun altro. Scegline un altro.'
         : 'Si è verificato un errore. Riprova o scrivici a amministrazione@wjboo.it.';
       errEl.style.display = 'block';
       btn.disabled = false;
